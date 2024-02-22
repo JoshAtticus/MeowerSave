@@ -50,7 +50,9 @@ for username in usernames:
                     'content': post['p'],
                     'post_id': post['_id'],
                     'username': post['u'],
-                    'timestamp': post['t']['e']
+                    'timestamp': post['t']['e'],
+                    'meo_share_link': f'https://meo-32r.pages.dev/share?id={post["_id"]}',
+                    'api_link': f'https://api.meower.org/posts?id={post["_id"]}'
                 }
                 posts.append(post_info)
                 print(f"Saved post {post['_id']}")
@@ -58,6 +60,8 @@ for username in usernames:
 
         with ThreadPoolExecutor(max_workers=10) as executor:
             executor.map(fetch_posts, range(1, total_pages + 1))
+
+    posts.sort(key=lambda x: x['timestamp'], reverse=True)
 
     with open(os.path.join('users', f'{username}.json'), 'w') as f:
         json.dump({'user_info': user_info, 'posts': posts}, f, indent=4)
